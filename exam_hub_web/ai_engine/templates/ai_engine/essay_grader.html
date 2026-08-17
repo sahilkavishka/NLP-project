@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Hub - Teacher's AI Grader</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 40px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { color: #1a73e8; text-align: center; }
+        textarea { width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; }
+        .btn { padding: 12px 24px; background: #1a73e8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn:hover { background: #1557b0; }
+        .result-box { background: #f8f9fa; padding: 20px; margin-top: 20px; border-radius: 8px; border-left: 5px solid #34a853; }
+        .covered { color: #188038; font-weight: bold; }
+        .missed { color: #d93025; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Teacher's AI Essay Grader</h1>
+        <p>AI will grade the answer based on meaning, not just exact words!</p>
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            <h3>1. Marking Scheme (Enter points separated by new lines)</h3>
+            <textarea name="marking_scheme" rows="5" required placeholder="e.g.&#10;A network shares resources.&#10;OSI model has 7 layers."></textarea>
+            
+            <h3>2. Student's Answer</h3>
+            <textarea name="student_answer" rows="5" required placeholder="Enter the student's paragraph here..."></textarea>
+            
+            <button type="submit" class="btn">Grade Essay with AI</button>
+        </form>
+
+        {% if result %}
+        <div class="result-box">
+            <h2>Final Score: {{ result.final_score }}%</h2>
+            <h3>Analysis:</h3>
+            <ul>
+                {% for item in result.detailed_analysis %}
+                    <li>
+                        {% if item.is_covered %}
+                            <span class="covered">✅ COVERED</span>
+                        {% else %}
+                            <span class="missed">❌ MISSED</span>
+                        {% endif %}
+                        (Match: {{ item.match_score }}%) - {{ item.point }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

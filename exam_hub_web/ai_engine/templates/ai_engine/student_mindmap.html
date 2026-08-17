@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Hub - Student Mind Mapper</title>
+    <!-- Load Mermaid.js to draw the graph -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 40px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { color: #f28b82; text-align: center; }
+        textarea { width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; }
+        .btn { padding: 12px 24px; background: #f28b82; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;}
+        .btn:hover { background: #d9736a; }
+        .graph-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 8px; border: 2px dashed #f28b82; text-align: center; overflow-x: auto;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Student AI Mind Mapper</h1>
+        <p>Paste your study notes below, and AI will automatically draw a Mind Map for you to study easily!</p>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <textarea name="study_notes" rows="6" required placeholder="e.g. A computer network connects multiple devices. A router forwards data packets. A switch connects devices in a network."></textarea>
+            <button type="submit" class="btn">Generate Mind Map</button>
+        </form>
+
+        {% if mermaid_code %}
+        <h2>Your AI Generated Mind Map:</h2>
+        <div class="graph-box">
+            <!-- Mermaid will automatically render this code into a diagram -->
+            <pre class="mermaid">
+{{ mermaid_code }}
+            </pre>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

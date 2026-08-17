@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Hub - AI Socratic Tutor</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f8ff; margin: 0; padding: 40px; }
+        .container { max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #0056b3; text-align: center; }
+        .chat-box { background: #e9ecef; padding: 20px; border-radius: 10px; margin-bottom: 20px; min-height: 150px;}
+        .student-msg { background: #007bff; color: white; padding: 12px; border-radius: 15px 15px 0 15px; margin-bottom: 15px; width: fit-content; max-width: 80%; float: right; clear: both;}
+        .tutor-msg { background: #28a745; color: white; padding: 12px; border-radius: 15px 15px 15px 0; margin-bottom: 15px; width: fit-content; max-width: 80%; float: left; clear: both;}
+        .clearfix::after { content: ""; clear: both; display: table; }
+        input[type="text"] { width: 75%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        .btn { width: 20%; padding: 12px; background: #0056b3; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;}
+        .btn:hover { background: #004494; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Socratic AI Tutor</h1>
+        <p style="text-align:center; color:#555;">I won't give you the answer, but I will help you find it!</p>
+        
+        <div class="chat-box clearfix">
+            <!-- Initial Greeting -->
+            <div class="tutor-msg">Hello! I am your AI Tutor. What topic are you struggling with today?</div>
+            
+            {% if student_question %}
+                <div class="student-msg">{{ student_question }}</div>
+            {% endif %}
+            
+            {% if tutor_response %}
+                <div class="tutor-msg">{{ tutor_response }}</div>
+            {% endif %}
+            
+            {% if error %}
+                <div class="tutor-msg" style="background:#dc3545;">Error: {{ error }}</div>
+            {% endif %}
+        </div>
+        
+        <form method="POST" style="display: flex; justify-content: space-between;">
+            {% csrf_token %}
+            <input type="text" name="student_question" required placeholder="Type your question here (e.g. What is an IP address?)">
+            <button type="submit" class="btn">Ask AI</button>
+        </form>
+    </div>
+</body>
+</html>
