@@ -1,0 +1,8 @@
+
+Computer Networks: 
+A computer network is a set of computers sharing resources located on or provided by network nodes.
+The OSI model has 7 layers: Physical, Data Link, Network, Transport, Session, Presentation, Application.
+
+Data Warehousing:
+A data warehouse is a centralized repository of integrated data from one or more disparate sources.
+It is used for reporting and data analysis, and is considered a core component of business intelligence.
