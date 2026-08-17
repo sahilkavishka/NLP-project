@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Hub - Content Gap Analyzer</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e2f; color: #fff; margin: 0; padding: 40px; }
+        .container { max-width: 900px; margin: auto; background: #27293d; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h1 { color: #ff8d72; text-align: center; }
+        p.subtitle { text-align: center; color: #9a9a9a; margin-bottom: 30px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;}
+        textarea { width: 100%; padding: 15px; background: #1e1e2f; border: 1px solid #444; color: #fff; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; background: #ff8d72; color: #1e1e2f; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s;}
+        .btn:hover { background: #e14eca; color: white;}
+        .result-section { margin-top: 30px; }
+        .card { background: #1e1e2f; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #ff8d72;}
+        .card.covered { border-left-color: #00f2c3; }
+        .badge { background: #ff8d72; color: #1e1e2f; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;}
+        .badge.covered { background: #00f2c3; }
+        .stat-box { text-align: center; background: #344675; padding: 15px; border-radius: 8px; margin-bottom: 20px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>YouTube Content Gap Analyzer</h1>
+        <p class="subtitle">Discover what 2026 students need vs. what you have already uploaded.</p>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <div class="grid">
+                <div>
+                    <h3 style="color: #00f2c3;">1. 2026 Syllabus / Target Topics</h3>
+                    <textarea name="syllabus" rows="6" required placeholder="Paste the syllabus or paragraph of what students need to learn..."></textarea>
+                </div>
+                <div>
+                    <h3 style="color: #fd5d93;">2. Your Existing Videos</h3>
+                    <textarea name="existing" rows="6" placeholder="Paste your current YouTube video titles here (one per line)..."></textarea>
+                </div>
+            </div>
+            <button type="submit" class="btn">Analyze Gaps & Find Opportunities</button>
+        </form>
+
+        {% if result %}
+        <div class="result-section">
+            <div class="stat-box">
+                <h2>Total Content Gap: {{ result.gap_percentage }}%</h2>
+                <p>AI identified {{ result.total_concepts }} core concepts from the syllabus.</p>
+            </div>
+            
+            <h3 style="color: #ff8d72;">🔥 Missing Topics (Make videos on these!)</h3>
+            {% for gap in result.gaps %}
+            <div class="card">
+                <span>{{ gap.topic }}</span>
+                <span class="badge">Opportunity Score: {{ gap.opportunity_score }}%</span>
+            </div>
+            {% empty %}
+            <p style="color:#9a9a9a;">Great job! You have covered all the main topics.</p>
+            {% endfor %}
+
+            <h3 style="color: #00f2c3; margin-top: 30px;">✅ Covered Topics</h3>
+            {% for cov in result.covered %}
+            <div class="card covered">
+                <span>{{ cov.topic }}</span>
+                <span class="badge covered">Match: {{ cov.match_score }}%</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% if error %}
+        <div style="background: #ff3a3a; padding: 15px; border-radius: 8px; margin-top: 20px;">
+            <strong>Error:</strong> {{ error }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

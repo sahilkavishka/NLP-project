@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Hub - Predictive Analytics</title>
+    <!-- Chart.js for Data Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; margin: 0; padding: 40px; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        h1 { color: #6f42c1; text-align: center; margin-bottom: 5px; }
+        p.subtitle { text-align: center; color: #6c757d; margin-bottom: 30px; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: #e0cffc; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid #d0bcf0; }
+        .stat-card h3 { margin: 0; color: #6f42c1; font-size: 16px; margin-bottom: 10px; }
+        .stat-card .value { font-size: 24px; font-weight: bold; color: #4b2885; }
+        .stat-card .trend { font-size: 14px; margin-top: 5px; font-weight: bold; color: #d63384; }
+        .chart-container { position: relative; height: 400px; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Analytics Dashboard</h1>
+        <p class="subtitle">AI-Powered Exam Topic Predictions for 2026 (Based on ML Regression)</p>
+        
+        <!-- Cards showing 2026 Predictions -->
+        <div class="dashboard-grid">
+            {% for topic, data in trends_data.predictions.items %}
+            <div class="stat-card">
+                <h3>{{ topic|replace:"_:" " " }}</h3>
+                <div class="value">{{ data.prediction_2026 }} Qs Expected</div>
+                <div class="trend">{{ data.trend }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- The Line Chart -->
+        <div class="chart-container">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Inject JSON data from Django securely -->
+    {{ trends_json|json_script:"trendsData" }}
+
+    <script>
+        const rawData = JSON.parse(document.getElementById('trendsData').textContent);
+        const labels = rawData.years.concat([2026]); // Add 2026 to x-axis
+        
+        const datasets = [];
+        const colors = ['#007bff', '#28a745', '#dc3545', '#ffc107', '#6f42c1'];
+        let colorIndex = 0;
+
+        for (const [topic, data] of Object.entries(rawData.predictions)) {
+            // Combine historical data with 2026 prediction
+            const plotData = data.historical.concat([data.prediction_2026]);
+            
+            datasets.push({
+                label: topic.replace(/_/g, ' '),
+                data: plotData,
+                borderColor: colors[colorIndex % colors.length],
+                backgroundColor: colors[colorIndex % colors.length] + '33', // with transparency
+                borderWidth: 2,
+                tension: 0.3,
+                fill: false
+            });
+            colorIndex++;
+        }
+
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: { labels: labels, datasets: datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: 'Historical Trends + 2026 ML Forecast', font: {size: 16} }
+                },
+                scales: {
+                    y: { title: { display: true, text: 'Expected Exam Weight (Frequency)' } },
+                    x: { title: { display: true, text: 'Year' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
