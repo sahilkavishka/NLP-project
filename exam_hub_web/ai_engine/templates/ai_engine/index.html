@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Hub AI System</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 40px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { color: #1a73e8; text-align: center; }
+        .upload-section { border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 20px; }
+        .btn { padding: 12px 24px; background: #1a73e8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 15px;}
+        .btn:hover { background: #1557b0; }
+        .result-box { background: #f8f9fa; padding: 20px; margin-top: 20px; border-radius: 8px; border-left: 5px solid #1a73e8; }
+        .error-box { background: #fce4e4; padding: 20px; margin-top: 20px; border-radius: 8px; border-left: 5px solid #d93025; color: #d93025;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Exam Hub - AI Processing Engine</h1>
+        
+        <form method="POST" enctype="multipart/form-data" class="upload-section">
+            {% csrf_token %}
+            <h3>Upload Audio Lecture (.wav)</h3>
+            <input type="file" name="audio_file" accept=".wav" required><br>
+            <button type="submit" class="btn">Process with AI</button>
+        </form>
+
+        {% if transcript %}
+        <div class="result-box">
+            <h2>1. Lecture Transcript</h2>
+            <p>{{ transcript }}</p>
+
+            <h2>2. SEO & Social Media Data</h2>
+            <p><strong>YouTube Title:</strong> {{ seo_data.youtube_title }}</p>
+            <p><strong>SEO Tags:</strong> {{ seo_data.seo_tags }}</p>
+            <p><strong>Facebook Post:</strong> {{ seo_data.facebook_post }}</p>
+            
+            <h2>3. AI Q&A Module (Auto-Generated)</h2>
+            <p><strong>Sample Question:</strong> What is this lecture about?</p>
+            <p><strong>AI Answer:</strong> {{ qa_answer }}</p>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="error-box">
+            <p><strong>Error Occurred:</strong> {{ error }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -9,7 +9,7 @@ class SEOGenerator:
     """
     def __init__(self, llm_model="google/flan-t5-small"):
         print(f"[SEOGenerator] Loading LLM: {llm_model}...")
-        hf_pipe = pipeline("text2text-generation", model=llm_model, max_length=100)
+        hf_pipe = pipeline("text-generation", model=llm_model, max_length=100)
         self.llm = HuggingFacePipeline(pipeline=hf_pipe)
         print("[SEOGenerator] Model loaded.")
 

@@ -19,7 +19,7 @@ class LectureRAG:
         self.embeddings = HuggingFaceEmbeddings(model_name=embedding_model)
         
         # Load Local LLM
-        hf_pipe = pipeline("text2text-generation", model=llm_model, max_length=150)
+        hf_pipe = pipeline("text-generation", model=llm_model, max_length=150)
         self.llm = HuggingFacePipeline(pipeline=hf_pipe)
         
         self.vector_db = None
